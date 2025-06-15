@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Monitor, Headphones, Users, Calculator } from 'lucide-react';
+import { ExternalLink, ArrowLeft } from 'lucide-react';
+import { DynamicIcon } from './DynamicIcon';
+import { AnimatedBackground } from './AnimatedBackground';
 
 interface Link {
   title: string;
@@ -15,13 +17,20 @@ interface Category {
   title: string;
   icon: string;
   color: string;
-  image: string;
+  backgroundImage: string;
   links: Link[];
 }
 
 interface IntranetData {
   companyName: string;
   companyLogo: string;
+  backgroundConfig: {
+    type: string;
+    images: string[];
+    animationType: string;
+    primaryColor: string;
+    secondaryColor: string;
+  };
   welcomeMessage: {
     title: string;
     subtitle: string;
@@ -29,18 +38,12 @@ interface IntranetData {
   categories: Category[];
 }
 
-const iconMap = {
-  Monitor,
-  Headphones,
-  Users,
-  Calculator,
-};
-
 interface MainContentProps {
   selectedCategory: string;
+  onCategorySelect: (categoryId: string) => void;
 }
 
-export function MainContent({ selectedCategory }: MainContentProps) {
+export function MainContent({ selectedCategory, onCategorySelect }: MainContentProps) {
   const [data, setData] = useState<IntranetData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,6 +58,13 @@ export function MainContent({ selectedCategory }: MainContentProps) {
         setData({
           companyName: 'TeleCom Solutions',
           companyLogo: '/placeholder.svg',
+          backgroundConfig: {
+            type: 'animated',
+            images: ['photo-1498050108023-c5249f4df085'],
+            animationType: 'particles',
+            primaryColor: '#0066cc',
+            secondaryColor: '#004499'
+          },
           welcomeMessage: {
             title: 'Welcome to Your Digital Workspace',
             subtitle: 'Connect, collaborate, and innovate with our integrated platform.'
@@ -69,10 +79,29 @@ export function MainContent({ selectedCategory }: MainContentProps) {
     loadData();
   }, []);
 
+  const handleLinkClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleCategoryClick = (categoryId: string) => {
+    onCategorySelect(categoryId);
+  };
+
+  const handleBackToHome = () => {
+    onCategorySelect('');
+  };
+
   if (loading || !data) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="text-center">
+      <div className="flex-1 flex items-center justify-center relative">
+        <AnimatedBackground backgroundConfig={{
+          type: 'animated',
+          images: ['photo-1498050108023-c5249f4df085'],
+          animationType: 'particles',
+          primaryColor: '#0066cc',
+          secondaryColor: '#004499'
+        }} />
+        <div className="text-center relative z-10">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading workspace...</p>
         </div>
@@ -84,76 +113,81 @@ export function MainContent({ selectedCategory }: MainContentProps) {
 
   if (!selectedCategory || !selectedCategoryData) {
     return (
-      <div className="flex-1 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8">
-        {/* Hero Section */}
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {data.welcomeMessage.title}
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {data.welcomeMessage.subtitle}
-            </p>
-          </div>
-
-          {/* Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {data.categories.map((category) => {
-              const IconComponent = iconMap[category.icon as keyof typeof iconMap] || Monitor;
-              
-              return (
-                <Card key={category.id} className="group hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden">
-                  <div className="relative h-32 overflow-hidden">
-                    <img
-                      src={`https://images.unsplash.com/${category.image}?w=400&h=200&fit=crop`}
-                      alt={category.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className={`absolute top-4 left-4 p-2 rounded-lg ${category.color} text-white`}>
-                      <IconComponent className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-semibold text-gray-900">
-                      {category.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-xs">
-                        {category.links.length} tools
-                      </Badge>
-                      <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-
-          {/* Features Section */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Monitor className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Integrated Tools</h3>
-              <p className="text-gray-600">Access all your essential business tools from one unified platform.</p>
+      <div className="flex-1 relative">
+        <AnimatedBackground backgroundConfig={data.backgroundConfig} />
+        <div className="relative z-10 p-8">
+          {/* Hero Section */}
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h1 className="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {data.welcomeMessage.title}
+              </h1>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                {data.welcomeMessage.subtitle}
+              </p>
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Team Collaboration</h3>
-              <p className="text-gray-600">Enhance productivity with seamless team communication and collaboration.</p>
+
+            {/* Categories Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {data.categories.map((category) => {
+                return (
+                  <Card 
+                    key={category.id} 
+                    className="group hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden border-0 bg-white/90 backdrop-blur-sm hover:bg-white/95"
+                    onClick={() => handleCategoryClick(category.id)}
+                  >
+                    <div className="relative h-32 overflow-hidden">
+                      <img
+                        src={`https://images.unsplash.com/${category.backgroundImage}?w=400&h=200&fit=crop`}
+                        alt={category.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <div className={`absolute top-4 left-4 p-3 rounded-xl ${category.color} text-white shadow-lg`}>
+                        <DynamicIcon name={category.icon} className="h-6 w-6" />
+                      </div>
+                    </div>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {category.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <Badge variant="secondary" className="text-xs font-medium">
+                          {category.links.length} tools
+                        </Badge>
+                        <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Headphones className="h-8 w-8 text-purple-600" />
+
+            {/* Features Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <DynamicIcon name="Server" className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Integrated Tools</h3>
+                <p className="text-gray-600 leading-relaxed">Access all your essential business tools from one unified platform designed for efficiency.</p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">24/7 Support</h3>
-              <p className="text-gray-600">Get help when you need it with our dedicated support team.</p>
+              <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <DynamicIcon name="Users" className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Team Collaboration</h3>
+                <p className="text-gray-600 leading-relaxed">Enhance productivity with seamless team communication and collaboration tools.</p>
+              </div>
+              <div className="text-center p-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <DynamicIcon name="Headphones" className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">24/7 Support</h3>
+                <p className="text-gray-600 leading-relaxed">Get help when you need it with our dedicated support team and comprehensive resources.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -161,48 +195,63 @@ export function MainContent({ selectedCategory }: MainContentProps) {
     );
   }
 
-  const IconComponent = iconMap[selectedCategoryData.icon as keyof typeof iconMap] || Monitor;
-
   return (
-    <div className="flex-1 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Category Header */}
-        <div className="mb-8">
-          <div className="flex items-center space-x-4 mb-4">
-            <div className={`p-3 rounded-xl ${selectedCategoryData.color} text-white`}>
-              <IconComponent className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{selectedCategoryData.title}</h1>
-              <p className="text-gray-600">{selectedCategoryData.links.length} available tools and resources</p>
+    <div className="flex-1 relative">
+      <AnimatedBackground backgroundConfig={data.backgroundConfig} />
+      <div className="relative z-10 p-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Breadcrumb Navigation */}
+          <div className="mb-6">
+            <button
+              onClick={handleBackToHome}
+              className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-medium transition-colors group"
+            >
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              <span>Back to Dashboard</span>
+            </button>
+          </div>
+
+          {/* Category Header */}
+          <div className="mb-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center space-x-6">
+              <div className={`p-4 rounded-2xl ${selectedCategoryData.color} text-white shadow-lg`}>
+                <DynamicIcon name={selectedCategoryData.icon} className="h-8 w-8" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">{selectedCategoryData.title}</h1>
+                <p className="text-lg text-gray-600">{selectedCategoryData.links.length} available tools and resources</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Links Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {selectedCategoryData.links.map((link, index) => (
-            <Card key={index} className="group hover:shadow-xl transition-all duration-300 cursor-pointer h-full">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center justify-between group-hover:text-blue-600 transition-colors">
-                  <span>{link.title}</span>
-                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 flex-1 flex flex-col">
-                <CardDescription className="mb-4 flex-1">{link.description}</CardDescription>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium group-hover:underline"
-                >
-                  Access Tool
-                  <ExternalLink className="ml-1 h-3 w-3" />
-                </a>
-              </CardContent>
-            </Card>
-          ))}
+          {/* Links Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {selectedCategoryData.links.map((link, index) => (
+              <Card 
+                key={index} 
+                className="group hover:shadow-2xl transition-all duration-300 cursor-pointer h-full border-0 bg-white/90 backdrop-blur-sm hover:bg-white/95 hover:-translate-y-1"
+                onClick={() => handleLinkClick(link.url)}
+              >
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-xl flex items-center justify-between group-hover:text-blue-600 transition-colors">
+                    <span className="font-bold">{link.title}</span>
+                    <ExternalLink className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors group-hover:scale-110" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 flex-1 flex flex-col">
+                  <CardDescription className="mb-6 flex-1 text-gray-600 leading-relaxed">
+                    {link.description}
+                  </CardDescription>
+                  <div className="pt-4 border-t border-gray-100">
+                    <span className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 font-semibold group-hover:underline">
+                      Launch Application
+                      <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>

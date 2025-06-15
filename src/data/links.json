@@ -2,6 +2,29 @@
 {
   "companyName": "TeleCom Solutions",
   "companyLogo": "/placeholder.svg",
+  "backgroundConfig": {
+    "type": "animated",
+    "images": [
+      "photo-1498050108023-c5249f4df085",
+      "photo-1605810230434-7631ac76ec81",
+      "photo-1581091226825-a6a2a5aee158"
+    ],
+    "animationType": "particles",
+    "primaryColor": "#0066cc",
+    "secondaryColor": "#004499"
+  },
+  "systemMonitoring": {
+    "enabled": true,
+    "zabbixUrl": "https://monitoring.telecom.com/api",
+    "refreshInterval": 30000,
+    "displayName": "System Health",
+    "fallbackStatus": "operational"
+  },
+  "navigation": {
+    "showHomeButton": true,
+    "homeButtonText": "Dashboard",
+    "homeButtonIcon": "Home"
+  },
   "welcomeMessage": {
     "title": "Welcome to Your Digital Workspace",
     "subtitle": "Connect, collaborate, and innovate with our integrated platform designed for modern telecommunications professionals."
@@ -10,9 +33,9 @@
     {
       "id": "it",
       "title": "IT & Technology",
-      "icon": "Monitor",
+      "icon": "Server",
       "color": "bg-blue-500",
-      "image": "photo-1498050108023-c5249f4df085",
+      "backgroundImage": "photo-1498050108023-c5249f4df085",
       "links": [
         {
           "title": "Help Desk Portal",
@@ -46,7 +69,7 @@
       "title": "Customer Support",
       "icon": "Headphones",
       "color": "bg-green-500",
-      "image": "photo-1605810230434-7631ac76ec81",
+      "backgroundImage": "photo-1605810230434-7631ac76ec81",
       "links": [
         {
           "title": "CRM System",
@@ -80,7 +103,7 @@
       "title": "Human Resources",
       "icon": "Users",
       "color": "bg-purple-500",
-      "image": "photo-1581091226825-a6a2a5aee158",
+      "backgroundImage": "photo-1581091226825-a6a2a5aee158",
       "links": [
         {
           "title": "Employee Portal",
@@ -114,7 +137,7 @@
       "title": "Finance & Accounting",
       "icon": "Calculator",
       "color": "bg-orange-500",
-      "image": "photo-1531297484001-80022131f5a1",
+      "backgroundImage": "photo-1531297484001-80022131f5a1",
       "links": [
         {
           "title": "Expense Management",

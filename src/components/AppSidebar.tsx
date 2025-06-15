@@ -10,15 +10,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
-import { Monitor, Headphones, Users, Calculator, Building2 } from 'lucide-react';
+import { Building2 } from 'lucide-react';
+import { DynamicIcon } from './DynamicIcon';
+import { SystemMonitoring } from './SystemMonitoring';
 
 interface Category {
   id: string;
   title: string;
   icon: string;
   color: string;
-  image: string;
+  backgroundImage: string;
   links: Array<{
     title: string;
     url: string;
@@ -29,15 +32,20 @@ interface Category {
 interface IntranetData {
   companyName: string;
   companyLogo: string;
+  navigation: {
+    showHomeButton: boolean;
+    homeButtonText: string;
+    homeButtonIcon: string;
+  };
+  systemMonitoring: {
+    enabled: boolean;
+    zabbixUrl: string;
+    refreshInterval: number;
+    displayName: string;
+    fallbackStatus: string;
+  };
   categories: Category[];
 }
-
-const iconMap = {
-  Monitor,
-  Headphones,
-  Users,
-  Calculator,
-};
 
 interface AppSidebarProps {
   onCategorySelect: (categoryId: string) => void;
@@ -77,6 +85,10 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
     );
   }
 
+  const handleHomeClick = () => {
+    onCategorySelect('');
+  };
+
   return (
     <Sidebar className="border-r border-slate-200 bg-gradient-to-b from-slate-50 to-white shadow-lg">
       <SidebarHeader className="p-6 border-b border-slate-100 bg-white/80 backdrop-blur-sm">
@@ -103,14 +115,52 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
       </SidebarHeader>
 
       <SidebarContent className="p-4">
+        {/* Home Navigation */}
+        {data.navigation.showHomeButton && (
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu className="mb-4">
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={handleHomeClick}
+                    isActive={!selectedCategory}
+                    className={`
+                      group relative flex items-center space-x-4 p-4 rounded-xl transition-all duration-200 ease-out hover:scale-[1.02]
+                      ${!selectedCategory 
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25' 
+                        : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 shadow-sm hover:shadow-md border border-slate-100'
+                      }
+                    `}
+                  >
+                    <div className={`
+                      flex-shrink-0 p-3 rounded-lg transition-all duration-200
+                      ${!selectedCategory 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-blue-500 text-white group-hover:scale-110'
+                      }
+                    `}>
+                      <DynamicIcon name={data.navigation.homeButtonIcon} className="h-5 w-5" />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <span className={`font-semibold text-sm ${!selectedCategory ? 'text-white' : 'text-slate-900'}`}>
+                        {data.navigation.homeButtonText}
+                      </span>
+                    </div>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs font-bold text-slate-400 uppercase tracking-wider px-3 py-3 mb-2">
-            Quick Access
+            Departments
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-2">
               {data.categories.map((category) => {
-                const IconComponent = iconMap[category.icon as keyof typeof iconMap] || Monitor;
                 const isSelected = selectedCategory === category.id;
                 
                 return (
@@ -133,7 +183,7 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
                           : `${category.color} text-white group-hover:scale-110`
                         }
                       `}>
-                        <IconComponent className="h-5 w-5" />
+                        <DynamicIcon name={category.icon} className="h-5 w-5" />
                       </div>
                       
                       <div className="flex-1 min-w-0">
@@ -165,18 +215,11 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {/* Status indicator */}
-        <div className="mt-8 px-3">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-            <div className="flex items-center space-x-2">
-              <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-xs font-medium text-green-700">All systems operational</span>
-            </div>
-            <p className="text-xs text-green-600 mt-1">Last updated: Just now</p>
-          </div>
-        </div>
       </SidebarContent>
+
+      <SidebarFooter className="p-4">
+        <SystemMonitoring config={data.systemMonitoring} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

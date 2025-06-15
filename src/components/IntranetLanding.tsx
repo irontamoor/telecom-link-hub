@@ -9,14 +9,14 @@ const IntranetLanding = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gray-50">
         <AppSidebar 
           onCategorySelect={setSelectedCategory}
           selectedCategory={selectedCategory}
         />
         <div className="flex-1 flex flex-col">
           {/* Top Bar */}
-          <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+          <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200 px-6 py-4 relative z-20">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <SidebarTrigger />
@@ -38,13 +38,16 @@ const IntranetLanding = () => {
           </header>
 
           {/* Main Content */}
-          <MainContent selectedCategory={selectedCategory} />
+          <MainContent 
+            selectedCategory={selectedCategory} 
+            onCategorySelect={setSelectedCategory}
+          />
 
           {/* Footer */}
-          <footer className="bg-white border-t border-gray-200 px-6 py-4">
+          <footer className="bg-white/80 backdrop-blur-sm border-t border-gray-200 px-6 py-4 relative z-20">
             <div className="text-center text-sm text-gray-500">
               Need help? Contact IT Support at{' '}
-              <a href="mailto:support@telecom.com" className="text-blue-600 hover:text-blue-800 font-medium">
+              <a href="mailto:support@telecom.com" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
                 support@telecom.com
               </a>
             </div>
