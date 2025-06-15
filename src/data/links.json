@@ -1,0 +1,134 @@
+
+{
+  "companyName": "TeleCom Solutions",
+  "categories": [
+    {
+      "id": "it",
+      "title": "IT & Technology",
+      "icon": "Monitor",
+      "links": [
+        {
+          "title": "Help Desk Portal",
+          "url": "https://helpdesk.telecom.com",
+          "description": "Submit IT tickets and track requests"
+        },
+        {
+          "title": "Network Monitoring",
+          "url": "https://network.telecom.com",
+          "description": "Monitor network status and performance"
+        },
+        {
+          "title": "Software Downloads",
+          "url": "https://downloads.telecom.com",
+          "description": "Access approved software and tools"
+        },
+        {
+          "title": "VPN Access",
+          "url": "https://vpn.telecom.com",
+          "description": "Secure remote access portal"
+        },
+        {
+          "title": "IT Policies",
+          "url": "https://policies.telecom.com/it",
+          "description": "IT security and usage policies"
+        }
+      ]
+    },
+    {
+      "id": "support",
+      "title": "Customer Support",
+      "icon": "Headphones",
+      "links": [
+        {
+          "title": "CRM System",
+          "url": "https://crm.telecom.com",
+          "description": "Customer relationship management"
+        },
+        {
+          "title": "Ticket Management",
+          "url": "https://tickets.telecom.com",
+          "description": "Support ticket tracking system"
+        },
+        {
+          "title": "Knowledge Base",
+          "url": "https://kb.telecom.com",
+          "description": "Internal support documentation"
+        },
+        {
+          "title": "Call Center Dashboard",
+          "url": "https://callcenter.telecom.com",
+          "description": "Real-time call center metrics"
+        },
+        {
+          "title": "Customer Portal",
+          "url": "https://portal.telecom.com",
+          "description": "Customer self-service portal"
+        }
+      ]
+    },
+    {
+      "id": "hr",
+      "title": "Human Resources",
+      "icon": "Users",
+      "links": [
+        {
+          "title": "Employee Portal",
+          "url": "https://hr.telecom.com/portal",
+          "description": "Access payslips, benefits, and forms"
+        },
+        {
+          "title": "Time & Attendance",
+          "url": "https://timesheet.telecom.com",
+          "description": "Log hours and view schedules"
+        },
+        {
+          "title": "Training Portal",
+          "url": "https://training.telecom.com",
+          "description": "Employee development and courses"
+        },
+        {
+          "title": "Benefits Management",
+          "url": "https://benefits.telecom.com",
+          "description": "Manage health and retirement benefits"
+        },
+        {
+          "title": "Performance Reviews",
+          "url": "https://performance.telecom.com",
+          "description": "Annual review and goal setting"
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "title": "Finance & Accounting",
+      "icon": "Calculator",
+      "links": [
+        {
+          "title": "Expense Management",
+          "url": "https://expenses.telecom.com",
+          "description": "Submit and track expense reports"
+        },
+        {
+          "title": "Budget Planning",
+          "url": "https://budget.telecom.com",
+          "description": "Department budget planning tools"
+        },
+        {
+          "title": "Invoice System",
+          "url": "https://invoices.telecom.com",
+          "description": "Process and track invoices"
+        },
+        {
+          "title": "Financial Reports",
+          "url": "https://reports.telecom.com",
+          "description": "Access financial dashboards"
+        },
+        {
+          "title": "Procurement Portal",
+          "url": "https://procurement.telecom.com",
+          "description": "Purchase requests and approvals"
+        }
+      ]
+    }
+  ]
+}
