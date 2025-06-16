@@ -1,11 +1,18 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { MainContent } from '@/components/MainContent';
+import { Info } from 'lucide-react';
 
 const IntranetLanding = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const navigate = useNavigate();
+
+  const handleInternalAccessClick = () => {
+    navigate('/how-to-use');
+  };
 
   return (
     <SidebarProvider>
@@ -30,9 +37,13 @@ const IntranetLanding = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
-                  Internal Access
-                </div>
+                <button
+                  onClick={handleInternalAccessClick}
+                  className="group bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium hover:bg-blue-200 transition-all duration-200 flex items-center space-x-1 cursor-pointer"
+                >
+                  <Info className="h-3 w-3 group-hover:rotate-12 transition-transform" />
+                  <span>Internal Access</span>
+                </button>
               </div>
             </div>
           </header>
