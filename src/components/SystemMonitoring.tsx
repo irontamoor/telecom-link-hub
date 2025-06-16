@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, Clock, Activity } from 'lucide-react';
+import { Activity, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 interface SystemMonitoringConfig {
   enabled: boolean;
@@ -15,128 +15,111 @@ interface SystemMonitoringProps {
 }
 
 export function SystemMonitoring({ config }: SystemMonitoringProps) {
-  const [systemStatus, setSystemStatus] = useState<'operational' | 'warning' | 'error' | 'loading'>('loading');
-  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-  const [metrics, setMetrics] = useState({
-    uptime: '99.9%',
-    responseTime: '45ms',
-    activeUsers: '1,247'
-  });
+  const [status, setStatus] = useState<'operational' | 'warning' | 'error'>('operational');
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!config.enabled) return;
 
-    const fetchSystemStatus = async () => {
+    const checkSystemStatus = async () => {
+      setIsLoading(true);
       try {
-        // For demo purposes, simulate API call
-        // In production, this would call the actual Zabbix API
-        const isOperational = Math.random() > 0.1; // 90% chance of being operational
+        // In a real implementation, this would call the Zabbix API
+        // For demo purposes, we'll simulate random status changes
+        const mockStatuses: Array<'operational' | 'warning' | 'error'> = ['operational', 'operational', 'operational', 'warning'];
+        const randomStatus = mockStatuses[Math.floor(Math.random() * mockStatuses.length)];
         
-        setSystemStatus(isOperational ? 'operational' : 'warning');
-        setLastUpdated(new Date());
-        
-        // Simulate some metrics
-        setMetrics({
-          uptime: `${(99.5 + Math.random() * 0.4).toFixed(1)}%`,
-          responseTime: `${Math.floor(30 + Math.random() * 30)}ms`,
-          activeUsers: `${Math.floor(1200 + Math.random() * 300).toLocaleString()}`
-        });
+        setStatus(randomStatus);
+        setLastUpdate(new Date());
       } catch (error) {
-        console.error('Failed to fetch system status:', error);
-        setSystemStatus('error');
+        console.error('Error checking system status:', error);
+        setStatus('error');
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    // Initial fetch
-    fetchSystemStatus();
+    // Initial check
+    checkSystemStatus();
 
     // Set up interval
-    const interval = setInterval(fetchSystemStatus, config.refreshInterval);
+    const interval = setInterval(checkSystemStatus, config.refreshInterval);
+
     return () => clearInterval(interval);
   }, [config]);
 
+  const getStatusInfo = () => {
+    switch (status) {
+      case 'operational':
+        return {
+          icon: CheckCircle,
+          text: 'All Systems Operational',
+          color: 'text-green-600',
+          bgColor: 'bg-green-50',
+          borderColor: 'border-green-200'
+        };
+      case 'warning':
+        return {
+          icon: AlertCircle,
+          text: 'Minor Issues Detected',
+          color: 'text-amber-600',
+          bgColor: 'bg-amber-50',
+          borderColor: 'border-amber-200'
+        };
+      case 'error':
+        return {
+          icon: AlertCircle,
+          text: 'System Issues',
+          color: 'text-red-600',
+          bgColor: 'bg-red-50',
+          borderColor: 'border-red-200'
+        };
+    }
+  };
+
   if (!config.enabled) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-        <div className="flex items-center space-x-2">
-          <div className="h-2 w-2 bg-gray-400 rounded-full"></div>
-          <span className="text-xs font-medium text-gray-600">Monitoring disabled</span>
+      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-slate-200 rounded-lg">
+            <Activity className="h-4 w-4 text-slate-500" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-slate-600">Monitoring Disabled</p>
+            <p className="text-xs text-slate-500">Enable in settings</p>
+          </div>
         </div>
       </div>
     );
   }
 
-  const getStatusConfig = () => {
-    switch (systemStatus) {
-      case 'operational':
-        return {
-          icon: CheckCircle,
-          color: 'text-green-700',
-          bgColor: 'bg-green-50',
-          borderColor: 'border-green-200',
-          dotColor: 'bg-green-500',
-          message: 'All systems operational'
-        };
-      case 'warning':
-        return {
-          icon: AlertCircle,
-          color: 'text-yellow-700',
-          bgColor: 'bg-yellow-50',
-          borderColor: 'border-yellow-200',
-          dotColor: 'bg-yellow-500',
-          message: 'Minor issues detected'
-        };
-      case 'error':
-        return {
-          icon: AlertCircle,
-          color: 'text-red-700',
-          bgColor: 'bg-red-50',
-          borderColor: 'border-red-200',
-          dotColor: 'bg-red-500',
-          message: 'System issues detected'
-        };
-      default:
-        return {
-          icon: Clock,
-          color: 'text-gray-700',
-          bgColor: 'bg-gray-50',
-          borderColor: 'border-gray-200',
-          dotColor: 'bg-gray-400',
-          message: 'Checking systems...'
-        };
-    }
-  };
-
-  const statusConfig = getStatusConfig();
-  const StatusIcon = statusConfig.icon;
+  const statusInfo = getStatusInfo();
+  const StatusIcon = statusInfo.icon;
 
   return (
-    <div className={`${statusConfig.bgColor} border ${statusConfig.borderColor} rounded-lg p-3 space-y-3`}>
-      <div className="flex items-center space-x-2">
-        <div className={`h-2 w-2 ${statusConfig.dotColor} rounded-full ${systemStatus === 'loading' ? 'animate-pulse' : 'animate-pulse'}`}></div>
-        <span className={`text-xs font-medium ${statusConfig.color}`}>
-          {statusConfig.message}
-        </span>
+    <div className={`p-4 rounded-xl border ${statusInfo.bgColor} ${statusInfo.borderColor} transition-all duration-300`}>
+      <div className="flex items-center space-x-3">
+        <div className={`p-2 rounded-lg ${statusInfo.bgColor} relative`}>
+          <StatusIcon className={`h-4 w-4 ${statusInfo.color}`} />
+          {isLoading && (
+            <div className="absolute -top-1 -right-1">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className={`text-sm font-semibold ${statusInfo.color} truncate`}>
+            {statusInfo.text}
+          </p>
+          <div className="flex items-center space-x-1 mt-1">
+            <Clock className="h-3 w-3 text-slate-400" />
+            <p className="text-xs text-slate-500">
+              {lastUpdate.toLocaleTimeString()}
+            </p>
+          </div>
+        </div>
       </div>
-      
-      <div className="grid grid-cols-3 gap-2 text-xs">
-        <div className="text-center">
-          <div className={`font-semibold ${statusConfig.color}`}>{metrics.uptime}</div>
-          <div className="text-gray-500">Uptime</div>
-        </div>
-        <div className="text-center">
-          <div className={`font-semibold ${statusConfig.color}`}>{metrics.responseTime}</div>
-          <div className="text-gray-500">Response</div>
-        </div>
-        <div className="text-center">
-          <div className={`font-semibold ${statusConfig.color}`}>{metrics.activeUsers}</div>
-          <div className="text-gray-500">Users</div>
-        </div>
-      </div>
-      
-      <p className="text-xs text-gray-600">
-        Last updated: {lastUpdated.toLocaleTimeString()}
-      </p>
     </div>
   );
 }
