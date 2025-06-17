@@ -50,7 +50,7 @@ export function MainContent({ selectedCategory, onCategorySelect }: MainContentP
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch('/src/data/links.json');
+        const response = await fetch('/links.json');
         const jsonData = await response.json();
         setData(jsonData);
       } catch (error) {
