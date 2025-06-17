@@ -144,7 +144,7 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
                     className={`
                       w-full h-12 px-4 rounded-xl transition-all duration-200 hover:scale-[1.02]
                       ${!selectedCategory 
-                        ? 'bg-blue-500 text-white shadow-md hover:bg-blue-600' 
+                        ? 'bg-blue-500 text-white shadow-lg border-2 border-blue-600' 
                         : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
                       }
                     `}
@@ -187,29 +187,26 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
                         onClick={() => onCategorySelect(category.id)}
                         isActive={isSelected}
                         className={`
-                          w-full h-14 px-4 rounded-xl transition-all duration-200 hover:scale-[1.01]
+                          w-full h-14 px-4 rounded-xl transition-all duration-200 hover:scale-[1.01] relative
                           ${isSelected 
-                            ? 'bg-blue-500 text-white shadow-md' 
+                            ? 'bg-slate-50 text-slate-800 shadow-lg border-2 border-slate-300 ring-2 ring-blue-200' 
                             : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
                           }
                         `}
                       >
                         <div className="flex items-center flex-1 min-w-0">
                           <div className={`
-                            flex-shrink-0 p-2.5 rounded-lg mr-3
-                            ${isSelected 
-                              ? 'bg-white/20 text-white' 
-                              : `${category.color} text-white`
-                            }
+                            flex-shrink-0 p-2.5 rounded-lg mr-3 shadow-sm
+                            ${category.color} text-white
                           `}>
                             <DynamicIcon name={category.icon} className="h-4 w-4" />
                           </div>
                           
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm truncate">
+                            <div className={`font-medium text-sm truncate ${isSelected ? 'text-slate-900' : ''}`}>
                               {category.title}
                             </div>
-                            <div className={`text-xs mt-0.5 ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
+                            <div className={`text-xs mt-0.5 ${isSelected ? 'text-slate-700' : 'text-slate-500'}`}>
                               {category.links.length} tools
                             </div>
                           </div>
@@ -220,7 +217,7 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
                               toggleCategory(category.id);
                             }}
                             className={`p-1.5 rounded-md transition-all duration-200 ${
-                              isSelected ? 'text-white hover:bg-white/20' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'
+                              isSelected ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'
                             }`}
                           >
                             {isExpanded ? 
@@ -229,6 +226,11 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
                             }
                           </button>
                         </div>
+                        
+                        {/* Selection Indicator */}
+                        {isSelected && (
+                          <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-r-full ${category.color}`} />
+                        )}
                       </SidebarMenuButton>
 
                       {/* Sub-links */}
@@ -240,7 +242,7 @@ export function AppSidebar({ onCategorySelect, selectedCategory }: AppSidebarPro
                               onClick={() => handleLinkClick(link.url)}
                               className="w-full text-left p-3 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all duration-200 flex items-center space-x-3"
                             >
-                              <div className="w-2 h-2 bg-slate-300 rounded-full flex-shrink-0"></div>
+                              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${category.color}`}></div>
                               <div className="flex-1 min-w-0">
                                 <div className="font-medium truncate">{link.title}</div>
                                 {link.description && (
